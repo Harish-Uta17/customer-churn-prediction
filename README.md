@@ -8,6 +8,8 @@
 ChurnGuard AI is an advanced machine learning application designed to predict customer churn in the telecommunications sector.  
 It analyzes customer demographics, service usage, and billing patterns to identify at-risk customers and help businesses take proactive actions.
 
+## 🚀 Live Demo
+### 👉 [https://customer-churn-prediction-sbbydtbut9zjbx9ugf96an.streamlit.app/]
 ---
 
 ## 🚀 Overview
