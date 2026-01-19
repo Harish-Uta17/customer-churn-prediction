@@ -73,7 +73,7 @@ Follow these steps to run the project locally.
 
 ### 1. Clone the Repository
 
-git clone https://github.com/your-username/customer-churn-prediction.git  
+git clone https://github.com/Harish-Uta17/customer-churn-prediction.git 
 cd customer-churn-prediction  
 
 ---
@@ -212,16 +212,6 @@ Contributions are welcome!
 - Fork the repository  
 - Create a new feature branch  
 - Submit a pull request  
-
----
-
-## 📧 Contact
-
-Your Name  
-
-LinkedIn: https://linkedin.com/in/your-profile  
-Portfolio: https://your-portfolio.com  
-Email: your.email@example.com  
 
 ---
 
