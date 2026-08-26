@@ -1,4 +1,4 @@
-# ⚡ Enterprise Customer Churn Prediction & Retention Intelligence Platform
+# ⚡ Customer Churn Prediction & Retention Intelligence Platform
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.3%2B-orange.svg)](https://scikit-learn.org/)
@@ -6,169 +6,216 @@
 [![Plotly](https://img.shields.io/badge/Plotly-5.18%2B-3F4F75.svg)](https://plotly.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-> An end-to-end production-grade Machine Learning system and interactive analytics console designed to predict telecommunication customer churn, isolate behavioral risk drivers, and trigger automated, high-impact retention playbooks.
+> A production-ready Machine Learning system and interactive analytics console for telecommunication customer churn prediction, behavioral risk analysis, and automated retention playbooks.
 
 ---
 
 ## 📌 Table of Contents
 
-1. [Executive Summary & Business Problem](#-executive-summary--business-problem)
-2. [Key Performance Benchmarks](#-key-performance-benchmarks)
-3. [End-to-End System Architecture](#-end-to-end-system-architecture)
-4. [Dataset & Exploratory Insights](#-dataset--exploratory-insights)
-5. [Feature Engineering & Preprocessing Pipeline](#-feature-engineering--preprocessing-pipeline)
-6. [Model Development, Tuning & Comparison](#-model-development-tuning--comparison)
-7. [Enterprise Streamlit Web Application](#-enterprise-streamlit-web-application)
-8. [Repository Directory Structure](#-repository-directory-structure)
-9. [Installation & Execution Guide](#-installation--execution-guide)
-10. [Docker & Containerized Deployment](#-docker--containerized-deployment)
-11. [Business Impact & ROI Framework](#-business-impact--roi-framework)
-12. [Interview Cheat Sheet & Technical Q&A](#-interview-cheat-sheet--technical-qa)
+1. [Project Overview](#-project-overview)
+2. [Business Problem & Motivation](#-business-problem--motivation)
+3. [Key Performance & Evaluation Benchmarks](#-key-performance--evaluation-benchmarks)
+4. [System Architecture & Dataflow](#-system-architecture--dataflow)
+5. [Dataset Description & Insights](#-dataset-description--insights)
+6. [Data Preprocessing & Feature Engineering](#-data-preprocessing--feature-engineering)
+7. [Machine Learning Models & Algorithms](#-machine-learning-models--algorithms)
+8. [Interactive Streamlit Web Console](#-interactive-streamlit-web-console)
+9. [Project Directory Structure](#-project-directory-structure)
+10. [Setup & Execution Guide](#-setup--execution-guide)
+11. [Docker Containerization](#-docker-containerization)
 
 ---
 
-## 🎯 Executive Summary & Business Problem
+## 🎯 Project Overview
 
-In subscription-based industries (SaaS, Telecom, Cloud Services), **customer acquisition cost (CAC)** is **5x to 7x higher** than the cost of customer retention. Attrition directly erodes Monthly Recurring Revenue (MRR) and Customer Lifetime Value (CLV).
+This project provides an end-to-end Machine Learning pipeline and an enterprise web dashboard for identifying subscription customers who are at risk of churning. It ingests customer demographic, contract, and service telemetry, processes the data through a zero-leakage feature pipeline, evaluates multiple classification models, and serves real-time calibrated churn risk predictions with actionable retention recommendations.
 
-### The Objective
-Build an automated, production-ready machine learning engine that:
-1. **Identifies at-risk customers** before subscription renewal windows close.
-2. **Explains risk factors** (e.g., month-to-month contracts, high monthly charges without security add-ons, early-tenure vulnerability).
-3. **Prescribes tailored operational interventions** (e.g., promotional discounts, service bundling, customer success outreach) directly to business stakeholders through an executive analytics dashboard.
+### Core Capabilities
+- **Automated Data Pipeline**: Robust cleaning, missing value handling, one-hot encoding, and feature scaling.
+- **Class Imbalance Resolution**: Synthetic Minority Over-sampling Technique (SMOTE) applied strictly to training data to handle ~3:1 class imbalance.
+- **Multi-Model Benchmark**: Evaluates and compares 5 classification algorithms (AdaBoost, Logistic Regression, Gradient Boosting, XGBoost, Random Forest).
+- **Interactive Web Interface**: Streamlit dashboard with a dual-theme design system (Light and Dark modes), custom SVG vector icons, real-time risk diagnostic meters, and operational playbooks.
 
 ---
 
-## 📊 Key Performance Benchmarks
+## 💼 Business Problem & Motivation
 
-Multiple classification algorithms were benchmarked on the test set (stratified 20% holdout split). The production model was selected based on **ROC-AUC** and **Recall** to prioritize identifying as many true churners as possible while maintaining discrimination capability.
+In subscription-based industries like telecom and SaaS, acquiring a new customer costs 5 to 7 times more than retaining an existing one. Customer attrition directly decreases Monthly Recurring Revenue (MRR) and lowers Customer Lifetime Value (CLV).
+
+### Business Goals
+1. **Early Attrition Detection**: Identify at-risk subscribers weeks before contract termination.
+2. **Actionable Explanations**: Surface key churn drivers (e.g., month-to-month contracts, high monthly charges, lack of tech support/security add-ons).
+3. **Automated Interventions**: Provide Customer Success and account teams with targeted retention playbooks based on calculated risk tiers (High, Medium, Low).
+
+---
+
+## 📊 Key Performance & Evaluation Benchmarks
+
+The models were evaluated on a stratified 20% holdout test set across multiple metrics. **ROC-AUC** and **Recall** were prioritized as the primary evaluation criteria to ensure maximum identification of true churners while preserving probability ranking capability.
 
 ### 🏆 Model Comparison Leaderboard
 
-| Model | ROC-AUC | Recall | Accuracy | Precision | F1-Score | Primary Strengths |
+| Model | ROC-AUC | Recall | Accuracy | Precision | F1-Score | Key Characteristics |
 |---|:---:|:---:|:---:|:---:|:---:|---|
-| **AdaBoost (Top Model)** | **0.8637** | **0.7882** | **0.7821** | **0.5632** | **0.6570** | **Highest discrimination & balanced recall across weak learners** |
-| **Logistic Regression** | 0.8607 | 0.8311 | 0.7544 | 0.5228 | 0.6418 | Maximum recall; highly interpretable odds-ratio coefficients |
+| **AdaBoost (Production)** | **0.8637** | **0.7882** | **0.7821** | **0.5632** | **0.6570** | **Highest ranking power; balanced precision and recall** |
+| **Logistic Regression** | 0.8607 | 0.8311 | 0.7544 | 0.5228 | 0.6418 | Highest recall; highly interpretable feature coefficients |
 | **Gradient Boosting** | 0.8578 | 0.6702 | 0.8034 | 0.6188 | 0.6435 | High overall accuracy and precision |
-| **XGBoost** | 0.8412 | 0.6032 | 0.7921 | 0.6081 | 0.6057 | Strong regularization on non-linear interactions |
-| **Random Forest** | 0.8362 | 0.5845 | 0.7842 | 0.5940 | 0.5892 | Robust against outliers and individual feature noise |
+| **XGBoost** | 0.8412 | 0.6032 | 0.7921 | 0.6081 | 0.6057 | Effective regularization on complex interactions |
+| **Random Forest** | 0.8362 | 0.5845 | 0.7842 | 0.5940 | 0.5892 | Robust ensemble with low sensitivity to noise |
 
 ```
 ROC-AUC Comparison:
-AdaBoost           ████████████████████████████████ 0.8637
-Logistic Regression ███████████████████████████████ 0.8607
-Gradient Boosting   ██████████████████████████████  0.8578
-XGBoost             ████████████████████████████    0.8412
-Random Forest       ███████████████████████████     0.8362
+AdaBoost            ████████████████████████████████ 0.8637
+Logistic Regression  ███████████████████████████████ 0.8607
+Gradient Boosting    ██████████████████████████████  0.8578
+XGBoost              ████████████████████████████    0.8412
+Random Forest        ███████████████████████████     0.8362
 ```
 
 ---
 
-## 🏗️ End-to-End System Architecture
+## 🏗️ System Architecture & Dataflow
 
-The project is architected with strict modularity, automated logging, and zero-leakage data pipelines:
+The system follows a modular architecture where each stage has a dedicated responsibility:
 
 ```mermaid
 flowchart TD
-    A[Raw Data Ingestion\nchurn.csv - 7,043 Records] --> B[Data Cleaning & Validation\nNull Handling, Type Coercion]
-    B --> C[Feature Engineering\nOne-Hot Encoding, Drop First]
+    A[Raw Data Ingestion\ndata/raw/churn.csv] --> B[Data Cleaning & Validation\nNull Imputation, Type Casting]
+    B --> C[Feature Engineering\nOne-Hot Encoding, drop_first=True]
     C --> D[Stratified Train/Test Split\n80% Train / 20% Test]
-    D --> E[SMOTE Class Balancing\nTrain Split ONLY]
+    D --> E[SMOTE Class Balancing\nApplied to Train Split Only]
     E --> F[StandardScaler Normalization\nFit on Train, Transform Test]
-    F --> G[Multi-Model Training\nAdaBoost, LogReg, GB, XGB, RF]
-    G --> H[Hyperparameter Tuning\nRandomizedSearchCV 5-Fold CV]
-    H --> I[Evaluation & Artifact Serialization\nmodels/churn_model_best.pkl + metadata.json]
-    I --> J[Enterprise Streamlit Web Console\nDark & Light Modes, Real-Time Inference]
+    F --> G[Multi-Model Training & Tuning\nAdaBoost, LogReg, GB, XGB, RF]
+    G --> H[Model Evaluation & Selection\nROC-AUC, Precision, Recall, F1]
+    H --> I[Artifact Serialization\nmodels/churn_model_best.pkl + metadata]
+    I --> J[Streamlit Analytics Console\nDual-Theme Dashboard & Inference Engine]
 ```
 
-### Architectural Highlights
-- **Config-Driven Architecture**: Pipeline hyperparameters, paths, and tuning grids are managed via `config/config.yaml`.
-- **Strict Data Leakage Prevention**: SMOTE oversampling and feature scalers are fitted **strictly on the training partition**, never exposing test statistics to the preprocessing pipeline.
-- **Production Artifact Integrity**: Model weights, feature names, scalers, and performance metadata are versioned together in `models/`.
+### Pipeline Flow
+1. **Config Loading**: Reads configuration parameters from `config/config.yaml`.
+2. **Ingestion & Validation**: Loads raw dataset, verifies data types, and checks schema consistency.
+3. **Cleaning**: Handles missing values in `TotalCharges` using cohort-based median imputation.
+4. **Encoding**: Converts categorical variables to numerical features using one-hot encoding (`drop_first=True`).
+5. **Stratified Splitting**: Splits data into 80% training and 20% testing sets while preserving the target distribution.
+6. **Class Balancing**: Applies SMOTE oversampling exclusively to the training set.
+7. **Feature Standardization**: Fits `StandardScaler` on training features and transforms both train and test partitions.
+8. **Model Training & Tuning**: Trains candidate algorithms and optimizes hyperparameters using `RandomizedSearchCV` with 5-fold cross-validation.
+9. **Artifact Export**: Serializes the best-performing model, scaler, feature list, and metadata into `models/`.
+10. **Web Serving**: The Streamlit application loads the serialized artifacts to deliver real-time inference and exploratory analytics.
 
 ---
 
-## 📈 Dataset & Exploratory Insights
+## 📈 Dataset Description & Insights
 
-The dataset comprises **7,043 customer accounts** with **21 feature attributes** covering customer demographics, service subscriptions, and billing contracts.
+The dataset comprises **7,043 customer accounts** with **21 feature attributes** detailing demographics, subscribed services, account contracts, and billing information.
 
-### Baseline Class Distribution
-- **Retained Customers (`No`)**: 5,174 (73.5%)
-- **Churned Customers (`Yes`)**: 1,869 (26.5%)
-- **Imbalance Ratio**: ~3:1 (Necessitating synthetic sampling and ROC-AUC prioritization).
+### Dataset Overview
+- **Total Records**: 7,043
+- **Retained (No Churn)**: 5,174 (73.5%)
+- **Churned (Yes)**: 1,869 (26.5%)
+- **Target Variable**: `Churn` (Binary: `Yes` / `No`)
 
-### Key Empirical Findings (EDA)
+### Feature Categories
 
-```
-1. Contract Type Impact:
-   Month-to-Month :  42.7% Churn Rate  ████████████████████
-   One-Year       :  11.3% Churn Rate  █████
-   Two-Year       :   2.8% Churn Rate  █
+| Category | Features |
+|---|---|
+| **Demographics** | `gender`, `SeniorCitizen`, `Partner`, `Dependents` |
+| **Connectivity & Services** | `PhoneService`, `MultipleLines`, `InternetService`, `OnlineSecurity`, `OnlineBackup`, `DeviceProtection`, `TechSupport`, `StreamingTV`, `StreamingMovies` |
+| **Account & Billing** | `tenure`, `Contract`, `PaperlessBilling`, `PaymentMethod`, `MonthlyCharges`, `TotalCharges` |
 
-2. Tenure Horizon:
-   0 - 12 Months  :  Highest churn density (>45% attrition window)
-   12 - 48 Months :  Stabilizing retention curve
-   48 - 72 Months :  Loyalty zone (<10% attrition)
-
-3. Service Bundling Factor:
-   Without Online Security / Tech Support : ~41% Churn
-   With Online Security / Tech Support    : ~14% Churn
-```
+### Key Exploratory Findings
+- **Contract Impact**: Subscribers on **month-to-month contracts** exhibit a **~42.7% churn rate**, compared to **11.3%** for one-year contracts and **2.8%** for two-year contracts.
+- **Tenure Vulnerability**: Customer churn is heavily concentrated in the **first 12 months** of tenure. Accounts that surpass 24 months show significantly higher retention stability.
+- **Service Bundling Effect**: Customers with **Online Security** and **Tech Support** add-ons have an attrition rate of **~14%**, compared to **~41%** for customers without these services.
+- **Billing Impact**: Customers with fiber optic service and higher monthly charges without bundled support features represent the highest-risk churn cohort.
 
 ---
 
-## ⚙️ Feature Engineering & Preprocessing Pipeline
+## ⚙️ Data Preprocessing & Feature Engineering
 
-### 1. Data Cleaning (`src/data/cleaner.py`)
-- Coerced `TotalCharges` from string object to float, resolving 11 whitespace-imputed missing values using the median of the corresponding tenure cohort.
-- Dropped irrelevant identifiers (`customerID`) to eliminate high-cardinality noise.
+### 1. Cleaning & Validation (`src/data/cleaner.py`)
+- `TotalCharges` contained 11 whitespace-padded missing entries for new customers with `tenure = 0`. These were imputed with cohort median values and converted from object to float.
+- Dropped the unique identifier `customerID` to prevent high-cardinality noise.
 
 ### 2. Categorical Encoding (`src/preprocessing/preprocessor.py`)
-- Applied **One-Hot Encoding** with `drop_first=True` across multi-category features (`InternetService`, `Contract`, `PaymentMethod`) and binary features (`Partner`, `Dependents`, `PhoneService`, `PaperlessBilling`).
-- Dropping the first dummy avoids multicollinearity (the "dummy variable trap"), ensuring numerical stability for linear algorithms.
+- Applied **One-Hot Encoding** with `drop_first=True` across nominal features (`Contract`, `InternetService`, `PaymentMethod`, etc.) to prevent multicollinearity (the dummy variable trap).
+- Converted all boolean indicator columns to integer type (`0` / `1`).
 
-### 3. Class Imbalance Mitigation via SMOTE
-- Synthetic Minority Over-sampling Technique (**SMOTE**) synthesizes novel minority samples along feature space line segments joining $k$-nearest neighbors ($k=5$).
-- Applied exclusively to the training set to preserve test distribution integrity.
+### 3. Class Imbalance Mitigation (SMOTE)
+- Mitigated the 73.5% / 26.5% class imbalance using **SMOTE** (Synthetic Minority Over-sampling Technique).
+- Synthetic instances were generated by interpolating between minority instances and their 5 nearest neighbors in feature space.
+- **Zero-Leakage Guarantee**: SMOTE was applied **only** to the training partition ($X_{train}, y_{train}$), ensuring the test set ($X_{test}, y_{test}$) remained unmodified and representative of real-world distributions.
 
 ### 4. Feature Standardization
-- Applied `StandardScaler` ($z = \frac{x - \mu}{\sigma}$) to continuous features (`tenure`, `MonthlyCharges`, `TotalCharges`).
-- Scaler parameters $(\mu, \sigma)$ are fitted on $X_{train}$ and applied to $X_{test}$ and production inference requests.
+- Applied `StandardScaler` to continuous numerical columns (`tenure`, `MonthlyCharges`, `TotalCharges`).
+- Scaler parameters $(\mu, \sigma)$ were fitted strictly on the training set and applied to the test set and production inference payloads.
 
 ---
 
-## 🧪 Model Development, Tuning & Comparison
+## 🧪 Machine Learning Models & Algorithms
 
-### Mathematical Foundation of Top Candidate Models
+The pipeline trains and evaluates five algorithms:
 
-#### 1. AdaBoost (Adaptive Boosting)
-- Iteratively trains weak decision stumps $h_t(x)$ by updating sample distribution weights $D_t(i)$:
-  $$D_{t+1}(i) = \frac{D_t(i) \exp(-\alpha_t y_i h_t(x_i))}{Z_t}$$
-  where $\alpha_t = \frac{1}{2} \ln\left(\frac{1 - \epsilon_t}{\epsilon_t}\right)$ assigns higher voting power to estimators with lower weighted error $\epsilon_t$.
-- **Why it won**: Exceptional ability to focus sequential attention on hard-to-classify borderline customer profiles without overfitting.
+### 1. AdaBoost Classifier (Production Model)
+- Sequentially trains an ensemble of decision stumps, iteratively adjusting sample weights to emphasize previously misclassified instances.
+- **Selected Hyperparameters**: `n_estimators=100`, `learning_rate=1.0`, `random_state=42`.
+- **Strengths**: Best overall balance of discrimination power (ROC-AUC 0.8637) and recall (78.82%).
 
-#### 2. Logistic Regression (Baseline Discriminator)
-- Models the log-odds of the binary outcome:
-  $$\ln\left(\frac{p}{1-p}\right) = \beta_0 + \sum_{j=1}^m \beta_j X_j$$
-  $$\hat{p} = \sigma(z) = \frac{1}{1 + e^{-z}}$$
-- **Hyperparameter Optimization**: L2 Regularization ($C=10$), `solver='liblinear'`, `max_iter=500`.
+### 2. Logistic Regression
+- Models the log-odds of churn using an optimized sigmoid transformation.
+- **Selected Hyperparameters**: `C=10`, `penalty='l2'`, `solver='liblinear'`, `max_iter=500`.
+- **Strengths**: Highest raw recall (83.11%) with transparent feature coefficients.
+
+### 3. Gradient Boosting Classifier
+- Builds trees sequentially to minimize the binary cross-entropy loss function.
+- **Selected Hyperparameters**: `n_estimators=200`, `learning_rate=0.1`, `max_depth=3`, `subsample=0.8`.
+- **Strengths**: Strong accuracy (80.34%) and precision (61.88%).
+
+### 4. XGBoost Classifier
+- Extreme Gradient Boosting with L1 and L2 regularization to prevent overfitting on complex non-linear feature interactions.
+
+### 5. Random Forest Classifier
+- Bagging ensemble of randomized decision trees evaluated across feature subsets.
 
 ---
 
-## 💻 Enterprise Streamlit Web Application
+## 💻 Interactive Streamlit Web Console
 
-The interactive web application (`app/streamlit_app.py`) provides an executive-ready interface:
+The application (`app/streamlit_app.py`) provides an executive analytics dashboard and real-time prediction engine:
 
-### 🌟 Core UI Features
-- **Dual-Theme System**: Real-time switching between **🌙 Dark Mode** (Obsidian glassmorphism `#070c18`) and **☀️ Light Mode** (Clean enterprise white `#ffffff`).
-- **Custom Vector SVG Suite**: 25+ scalable, duotone SVG vector icons replacing emojis across all metric cards, navigation items, form inputs, and status badges.
-- **Equal-Height Grid Architecture**: Stretch-aligned metric cards, feature containers, and chart frames.
+### UI & UX Features
+- **Dual-Theme Design System**: Smooth real-time toggle between **🌙 Dark Mode** (Obsidian glassmorphism) and **☀️ Light Mode** (Clean enterprise white) with high text contrast across all elements.
+- **Custom Scalable SVG Vector Suite**: 25+ duotone SVG vector icons integrated across headers, metric cards, navigation items, form inputs, and status badges.
+- **Equal-Height Layout Grids**: Flexbox- and grid-aligned KPI cards, capability panels, and chart containers.
 
-### 📑 4 Application Views
-1. 📊 **Overview**: Executive telemetry hero banner, 5 primary KPI cards, strategic capabilities, 4 Plotly charts (Pie, Contract Bar, Tenure Curve, Billing Boxplot), and operational workflow.
-2. 📈 **Dashboard**: Population metrics, dataset distribution summaries, and cohort health analytics.
-3. ⚡ **Predict Engine**: 4-quadrant structured inference form (Demographics, Services, Billing, Add-ons), instant probability calibration meter, risk tier badge (`HIGH`, `MEDIUM`, `LOW`), and automated retention playbook protocol (`URGENT`, `WATCHLIST`, `OPTIMAL`).
-4. 📚 **Documentation**: Production system specifications, 5-metric performance evaluation bar chart, multi-model comparison table, and end-to-end architectural topology.
+### Application Pages
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                          CHURNAI CONSOLE                               │
+├───────────────────┬────────────────────────────────────────────────────┤
+│ 🌙 Dark / ☀️ Light │ 📊 OVERVIEW                                        │
+│                   │    Executive telemetry, KPIs, 4 Plotly analytics   │
+│ 📊 Overview       │    charts, and operational workflow.               │
+│ 📈 Dashboard      ├────────────────────────────────────────────────────┤
+│ ⚡ Predict Engine │ 📈 DASHBOARD                                       │
+│ 📚 Documentation  │    Dataset summaries, population health, and       │
+│                   │    cohort risk breakdown.                          │
+│                   ├────────────────────────────────────────────────────┤
+│ Active Model:     │ ⚡ PREDICT ENGINE                                   │
+│ AdaBoost          │    4-quadrant feature input form, calibrated risk  │
+│ ROC-AUC: 0.8637   │    progress bar, risk tier badge, and playbook.    │
+│ Accuracy: 78.21%  ├────────────────────────────────────────────────────┤
+│ Recall:   78.82%  │ 📚 DOCUMENTATION                                   │
+│                   │    Production specs, multi-model leaderboard, and  │
+│                   │    end-to-end system architecture topology.        │
+└───────────────────┴────────────────────────────────────────────────────┘
+```
+
+1. 📊 **Overview**: High-level telemetry, key metric snapshots, interactive Plotly visualizations (Churn Distribution Pie, Contract Churn Bar, Tenure Risk Curve, Billing Boxplot), and operational workflow phases.
+2. 📈 **Dashboard**: Population metrics, dataset distribution analysis, tenure comparison boxplots, and risk cohort summaries.
+3. ⚡ **Predict Engine**: Input single customer profile attributes across Demographics, Connectivity, Billing, and Add-ons. Computes real-time churn probability, assigns a calibrated risk tier (`HIGH`, `MEDIUM`, `LOW`), and generates a targeted retention protocol (`URGENT`, `WATCHLIST`, `OPTIMAL`).
+4. 📚 **Documentation**: Detailed production model specifications, performance score comparisons, candidate algorithm leaderboard, and system architecture topology.
 
 ---
 
@@ -177,99 +224,105 @@ The interactive web application (`app/streamlit_app.py`) provides an executive-r
 ```text
 Customer_Churn_prediction/
 ├── app/
-│   └── streamlit_app.py            # Streamlit enterprise web console (Dual-Theme)
+│   └── streamlit_app.py            # Streamlit web application (Dual-Theme Console)
 ├── config/
-│   ├── config.yaml                 # Master configuration for training & tuning
-│   ├── dev.yaml                    # Development configuration profile
-│   └── production.yaml             # Production deployment configuration profile
+│   ├── config.yaml                 # Master pipeline and model configuration
+│   ├── dev.yaml                    # Development configuration overrides
+│   └── production.yaml             # Production configuration profile
 ├── data/
 │   ├── raw/
-│   │   └── churn.csv               # Telco customer churn dataset (7,043 rows)
+│   │   └── churn.csv               # Raw Telco customer churn dataset (7,043 rows)
 │   └── processed/
-│       └── churn_processed.csv     # Cleaned and validated dataset
+│       └── churn_processed.csv     # Cleaned and processed dataset
 ├── images/
-│   ├── confusion_matrix.png        # Production model confusion matrix
+│   ├── confusion_matrix.png        # Confusion matrix visual
 │   ├── feature_importance.png      # Feature importance rankings
-│   └── roc_curve.png               # ROC-AUC evaluation curves
+│   └── roc_curve.png               # ROC-AUC evaluation curve
 ├── logs/
-│   └── app.log                     # Runtime pipeline logs
+│   └── app.log                     # Pipeline execution and runtime logs
 ├── models/
 │   ├── churn_model_best.pkl        # Serialized production model artifact
-│   ├── churn_model_best_metadata.json # Metadata, hyperparameters, test metrics
-│   └── model_comparison.csv       # Multi-model evaluation benchmark comparison
+│   ├── churn_model_best_metadata.json # Hyperparameters, metrics, and metadata
+│   └── model_comparison.csv       # Multi-model evaluation leaderboard
 ├── notebook/
-│   └── Customer_Churn_Prediction.ipynb # Exploratory data analysis & experiments
+│   └── Customer_Churn_Prediction.ipynb # Jupyter notebook for exploratory analysis
 ├── src/
 │   ├── __init__.py
 │   ├── config.py                   # YAML configuration loader
 │   ├── data/
 │   │   ├── __init__.py
 │   │   ├── cleaner.py              # Data cleaning, null imputation, type validation
-│   │   └── loader.py               # Dataset ingestion helpers
+│   │   └── loader.py               # Data loading routines
 │   ├── preprocessing/
 │   │   ├── __init__.py
 │   │   └── preprocessor.py         # One-hot encoding, SMOTE, StandardScaler
 │   ├── models/
 │   │   ├── __init__.py
-│   │   ├── evaluate.py             # ROC-AUC, classification report, confusion matrix
-│   │   ├── model_manager.py        # Model serialization & artifact management
-│   │   ├── predict.py              # Single & batch inference routines
-│   │   └── train.py                # Model training & RandomizedSearchCV tuning
+│   │   ├── evaluate.py             # Metrics calculation, ROC-AUC, confusion matrix
+│   │   ├── model_manager.py        # Model serialization and artifact loading
+│   │   ├── predict.py              # Prediction and probability scoring routines
+│   │   └── train.py                # Model training and hyperparameter tuning
 │   └── utils/
 │       ├── __init__.py
-│       ├── constants.py            # Global constants & metric definitions
-│       ├── helpers.py              # Shared helper functions
-│       └── logger.py               # Thread-safe logging handler
-├── Dockerfile                      # Container definition for containerized serving
+│       ├── constants.py            # Project constants and default parameters
+│       ├── helpers.py              # Shared helper utilities
+│       └── logger.py               # Centralized logging configuration
+├── Dockerfile                      # Docker container build specification
 ├── main.py                         # End-to-end training pipeline orchestrator
-├── quick_test.py                   # Repository sanity test & verification script
-├── requirements.txt                # Production Python dependencies
-├── setup.py                        # Package installation configuration
-└── README.md                       # Comprehensive documentation & interview guide
+├── quick_test.py                   # Sanity verification script
+├── requirements.txt                # Python package dependencies
+├── setup.py                        # Package metadata and installation configuration
+└── README.md                       # Project documentation
 ```
 
 ---
 
-## 🚀 Installation & Execution Guide
+## 🚀 Setup & Execution Guide
 
 ### Prerequisites
-- Python 3.10+
+- Python 3.10 or higher
 - `pip` package manager
 
-### 1. Clone the Repository & Set Up Virtual Environment
+### 1. Clone the Repository
 ```bash
 git clone https://github.com/Harish-Uta17/Customer-Churn-Prediction.git
 cd Customer_Churn_Prediction
+```
 
-# Create virtual environment
+### 2. Create and Activate a Virtual Environment
+```bash
+# Windows
 python -m venv venv
-
-# Activate virtual environment
-# Windows:
 venv\Scripts\activate
-# Linux/macOS:
+
+# Linux / macOS
+python -m venv venv
 source venv/bin/activate
 ```
 
-### 2. Install Dependencies
+### 3. Install Dependencies
 ```bash
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### 3. Execute the Machine Learning Pipeline
-Train all candidate models, run cross-validation, evaluate on the test split, and save the best artifact:
+### 4. Run the Machine Learning Pipeline
+Execute the full training, evaluation, and serialization pipeline:
 ```bash
 python main.py
 ```
+This script:
+- Cleans and preprocesses `data/raw/churn.csv`
+- Balances classes via SMOTE and scales features
+- Trains and cross-validates candidate models
+- Saves the best-performing model and metadata to `models/`
 
-### 4. Run Sanity Validation
-Verify project dependencies, data paths, and model artifact health:
+### 5. Run Verification Sanity Check
 ```bash
 python quick_test.py
 ```
 
-### 5. Launch the Streamlit Web Application
+### 6. Launch the Streamlit Web Application
 ```bash
 streamlit run app/streamlit_app.py
 ```
@@ -277,95 +330,24 @@ Open your browser at `http://localhost:8501`.
 
 ---
 
-## 🐳 Docker & Containerized Deployment
+## 🐳 Docker Containerization
 
-To build and run the application inside an isolated Docker container:
+To run the application inside an isolated Docker container:
 
+### Build the Image
 ```bash
-# Build the Docker image
 docker build -t customer-churn-app:v1 .
-
-# Run the container exposing port 8501
-docker run -d -p 8501:8501 --name churn-container customer-churn-app:v1
 ```
 
-Access the containerized app at `http://localhost:8501`.
+### Run the Container
+```bash
+docker run -d -p 8501:8501 --name churn-app customer-churn-app:v1
+```
+
+Access the application in your browser at `http://localhost:8501`.
 
 ---
 
-## 💰 Business Impact & ROI Framework
+## 📄 License
 
-When presenting this project to business leaders or hiring managers, frame the model in terms of financial impact:
-
-### Financial Equation
-$$\text{Expected Net Savings} = \sum_{i \in \text{Flagged Customers}} \left( \hat{p}_i \times \text{CLV}_i \times \text{Success Rate}_{\text{intervention}} \right) - \text{Cost}_{\text{intervention}}$$
-
-### Scenario Example
-- **Monthly Customer Cohort**: 1,000 subscribers.
-- **Observed Churn Rate**: 26.5% ($\approx 265$ churners).
-- **Average Customer Lifetime Value (CLV)**: $1,200 ($100/month for 12-month expected retention).
-- **Potential Revenue at Risk**: $265 \times \$1,200 = \mathbf{\$318,000}$.
-- **With Churn Model**:
-  - Model identifies ~78.8% of churners (Recall) = **209 churners detected**.
-  - Customer Success delivers a targeted retention offer costing $50 per customer with a **30% save rate**.
-  - **Saved Customers**: $209 \times 30\% \approx \mathbf{63 \text{ customers retained}}$.
-  - **Saved Revenue**: $63 \times \$1,200 = \mathbf{\$75,600}$.
-  - **Campaign Cost**: $209 \times \$50 = \mathbf{\$10,450}$.
-  - **Net Monthly Profit / Savings**: $\$75,600 - \$10,450 = \mathbf{\$65,150 \text{ / month}}$ ($\approx \mathbf{\$781,800 \text{ / year}}$).
-
----
-
-## 🎓 Interview Cheat Sheet & Technical Q&A
-
-Use this section to prepare for technical, architectural, and business interview questions.
-
-### Q1: Why did you choose ROC-AUC and Recall over Accuracy?
-> **Answer**: In churn prediction, the dataset is imbalanced (73.5% non-churn vs 26.5% churn). A trivial dummy classifier that predicts "No Churn" for every customer would achieve **73.5% accuracy**, but **0% recall**, completely failing the business objective. **Recall** measures what percentage of actual churners we successfully catch. **ROC-AUC** measures the model's ability to rank churn probabilities correctly across all classification thresholds, making it robust against class imbalance.
-
-### Q2: How did you prevent Data Leakage during preprocessing?
-> **Answer**: Data leakage was strictly prevented by:
-> 1. Performing the stratified 80/20 train/test split **before** applying SMOTE and feature scaling.
-> 2. Applying **SMOTE only on the training set**, ensuring the test set reflects the real-world population distribution.
-> 3. Fitting the `StandardScaler` ($\mu, \sigma$) strictly on $X_{train}$ and only calling `.transform()` on $X_{test}$ and runtime prediction inputs.
-
-### Q3: What is SMOTE and why use it instead of simple random oversampling?
-> **Answer**: Random oversampling duplicates existing minority class rows, which can cause the model to memorize specific noise points and overfit. **SMOTE** (Synthetic Minority Over-sampling Technique) creates synthetic examples by finding $k$-nearest neighbors in feature space for minority instances and interpolating new points along the connecting line segment:
-> $$x_{new} = x_i + \lambda (x_{zi} - x_i), \quad \lambda \in [0, 1]$$
-> This expands the decision boundary region around the minority class.
-
-### Q4: What were the top feature predictors of churn?
-> **Answer**:
-> 1. **Tenure**: Strong negative correlation. Customers in their first 12 months have over a 45% churn rate; after 24 months, churn drops significantly.
-> 2. **Contract Type**: Month-to-month contracts experience ~42.7% churn, whereas two-year contracts have <3% churn.
-> 3. **Monthly Charges & Fiber Optic**: High monthly bills without security add-ons showed elevated churn.
-> 4. **Value-Added Services**: Customers with **Online Security** and **Tech Support** exhibited less than half the churn rate of customers without these services.
-
-### Q5: Why did AdaBoost / Logistic Regression outperform tree ensembles like Random Forest?
-> **Answer**: The dataset features are predominantly binary categorical indicators (after one-hot encoding). Logistic Regression provides optimal linear log-odds separation for binary indicators with continuous tenure/billing variables. AdaBoost sequentially adjusted sample weights on borderline cases, boosting weak learner performance to achieve an **ROC-AUC of 0.8637**, whereas deep Random Forests tended to overfit sample splits on binary dummy indicators.
-
-### Q6: How does the application translate model probabilities into operational actions?
-> **Answer**: The system maps continuous probabilities into 3 calibrated risk bands:
-> - **High Risk ($\ge 70\%$)**: Triggers an **URGENT** retention protocol (direct outreach within 24-48 hours, 15% discount contract extension, free tech support add-on).
-> - **Medium Risk ($40\% - 69\%$)**: Triggers a **WATCHLIST** protocol (feature adoption email sequences, incentive to transition to an annual contract).
-> - **Low Risk ($< 40\%$)**: Triggers an **OPTIMAL** loyalty protocol (standard relationship cadence, loyalty rewards, CSAT survey).
-
-### Q7: How would you monitor this model in production?
-> **Answer**:
-> 1. **Data Drift & Feature Drift**: Monitor distribution shifts (using Kolmogorov-Smirnov test for continuous features and Population Stability Index (PSI) for categorical variables).
-> 2. **Concept Drift**: Track rolling calibration curves and actual churn outcomes over 30/60/90-day retention windows.
-> 3. **Inference Latency & Error Logging**: Track API request response times (<15ms) and error rates in `logs/app.log`.
-
-### Q8: What would be your next steps if you had more time or live telemetry?
-> **Answer**:
-> 1. **Survival Analysis**: Implement Cox Proportional Hazards or Random Survival Forests to estimate **Time-to-Churn** ($T$) rather than just a binary label.
-> 2. **SHAP / LIME Integration**: Compute exact local Shapley value feature contributions for each individual prediction.
-> 3. **A/B Testing Retention Campaigns**: Run randomized controlled trials comparing model-targeted customer retention incentives vs a control group to measure true incremental lift (Uplift Modeling).
-
----
-
-## 👨‍💻 Author & Contact
-
-- **Author**: Harish Kumar
-- **GitHub**: [@Harish-Uta17](https://github.com/Harish-Uta17)
-- **Repository**: [Customer-Churn-Prediction](https://github.com/Harish-Uta17/Customer-Churn-Prediction)
-- **License**: MIT
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
